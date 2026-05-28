@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart - New Horizon Studios</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/header.css">
+  <style>
+    body { margin: 0; background: #FAFBFE; }
+    .cart-container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 6%;
+    }
+    .cart-item {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .cart-item img {
+      width: 120px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    .cart-item-info { flex: 1; }
+    .cart-item-info h3 { margin: 0 0 6px 0; }
+    .cart-item-info .variant { color: #666; font-size: 0.95rem; }
+    .remove-btn {
+      background: #c94c4c;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-right: 12px;
+    }
+    .qty-btn {
+      width: 28px;
+      height: 28px;
+      border: 1px solid #ccc;
+      background: white;
+      border-radius: 4px;
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qty-btn:hover {
+      background: #f5f5f5;
+      border-color: #c9a66b;
+    }
+    .qty-value {
+      min-width: 24px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .cart-summary {
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      margin-top: 30px;
+    }
+    .total {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin: 20px 0;
+    }
+    .checkout-btn {
+      width: 100%;
+      padding: 16px;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    .checkout-btn:hover { background: #c9a66b; }
+
+    @media (max-width: 600px) {
+      .cart-item {
+        flex-wrap: wrap;
+        padding: 14px;
+      }
+      .cart-item img {
+        width: 80px;
+        height: 60px;
+      }
+      .qty-controls {
+        order: 3;
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 8px;
+        margin-left: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Shared header is injected here by js/header-loader.js -->
+  <script src="js/header-loader.js" data-title="Cart" data-active="cart"></script>
+
+  <div class="cart-container">
+    <h2 style="margin-bottom: 30px;">Your Cart</h2>
+    
+    <div id="cartItems"></div>
+    
+    <div class="cart-summary" id="cartSummary" style="display: none;">
+      <div class="total">
+        Total: $<span id="cartTotal">0</span>
+      </div>
+      <button class="checkout-btn" onclick="proceedToCheckout()">Proceed to Checkout</button>
+      <p style="font-size: 0.85rem; color: #666; margin-top: 15px;">
+        Shipping calculated at checkout • Printful fulfilment
+      </p>
+    </div>
+  </div>
+
+  <!-- Shared cart + utilities (must come before inline cart page script) -->
+  <script src="js/main.js"></script>
+
+  <script>
+    // Cart logic is provided by js/main.js (shared)
+    // We only need page-specific rendering here.
+
+    function renderCart() {
+      const container = document.getElementById('cartItems');
+      const summary = document.getElementById('cartSummary');
+      container.innerHTML = '';
+
+      const currentCart = window.getCart ? window.getCart() : [];
+
+      if (currentCart.length === 0) {
+        container.innerHTML = '<p>Your cart is empty.</p>';
+        summary.style.display = 'none';
+        return;
+      }
+
+      let total = 0;
+
+      currentCart.forEach((item) => {
+        total += item.price * (item.qty || 1);
+
+        const qty = item.qty || 1;
+
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <img src="${item.img}" alt="${item.name}">
+          <div class="cart-item-info">
+            <h3>${item.displayName || item.name}</h3>
+            <div class="variant">$${item.price}</div>
+          </div>
+
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="changeQty(${item.cartId}, -1)">−</button>
+            <span class="qty-value">${qty}</span>
+            <button class="qty-btn" onclick="changeQty(${item.cartId}, 1)">+</button>
+          </div>
+
+          <button class="remove-btn" onclick="removeFromCart(${item.cartId})">Remove</button>
+        `;
+        container.appendChild(div);
+      });
+
+      document.getElementById('cartTotal').textContent = total;
+      summary.style.display = 'block';
+    }
+
+    function changeQty(cartId, delta) {
+      const currentCart = window.getCart ? window.getCart() : [];
+      const item = currentCart.find(i => i.cartId === cartId);
+      if (!item) return;
+
+      const newQty = (item.qty || 1) + delta;
+      if (newQty < 1) return;
+
+      if (window.updateCartItemQuantity) {
+        window.updateCartItemQuantity(cartId, newQty);
+      }
+
+      // Refresh cart display and header count
+      renderCart();
+      if (window.updateCartCount) window.updateCartCount();
+    }
+
+    function proceedToCheckout() {
+      alert('Checkout flow coming next (Printful + Stripe integration)');
+      // Later we can redirect to a checkout page or Printful checkout
+    }
+
+    // Initial render - wait for shared script to load
+    function initCartPage() {
+      if (window.updateCartCount) window.updateCartCount();
+      renderCart();
+    }
+
+    // Run after shared script has executed
+    window.addEventListener('load', initCartPage);
+  </script>
+
+  <!-- Shared cart + utilities -->
+  <script src="js/main.js"></script>
+</body>
+</html>

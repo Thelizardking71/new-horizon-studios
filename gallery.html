@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery - New Horizon Studios</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/header.css">
+  <style>
+    body { margin: 0; background: #FAFBFE; }
+    .page-header { padding: 80px 6% 50px; text-align: center; }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      padding: 100px 6% 80px;
+    }
+    .filters button {
+      padding: 9px 18px;
+      background: #fff;
+      border: 1px solid #d1d5db;
+      border-radius: 9999px;
+      color: #374151;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      white-space: nowrap;
+    }
+    .filters button:hover {
+      border-color: #c9a66b;
+      color: #c9a66b;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+    .filters button.active {
+      background: #1f2937;
+      color: white;
+      border-color: #1f2937;
+      box-shadow: 0 2px 8px rgba(31, 41, 55, 0.35);
+    }
+    .filters button.active:hover {
+      background: #111827;
+      border-color: #111827;
+      transform: none;
+    }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 35px; padding: 0 6% 100px; max-width: 1800px; margin: 0 auto; }
+    .gallery img { width: 100%; height: 280px; object-fit: cover; border-radius: 4px; cursor: pointer; transition: transform 0.3s; }
+    .gallery img:hover { transform: scale(1.04); }
+
+    @media (max-width: 600px) {
+      .gallery {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 16px;
+        padding: 0 4% 60px;
+      }
+      .gallery img {
+        height: 160px;
+      }
+      .filters {
+        padding: 100px 4% 60px;
+      }
+    }
+
+    .lightbox { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; }
+    .lightbox-content { position: relative; max-width: 90%; max-height: 90vh; }
+    .lightbox-content img { max-height: 85vh; border-radius: 4px; }
+    .close { position: absolute; top: -50px; right: 10px; color: white; font-size: 50px; cursor: pointer; z-index: 2001; }
+  </style>
+</head>
+<body>
+  <!-- Shared header is injected here by js/header-loader.js -->
+  <script src="js/header-loader.js" data-title="Gallery" data-active="gallery"></script>
+
+  <section class="filters">
+    <button class="active" onclick="filterCategory('all', this)">All</button>
+    <button onclick="filterCategory('coast', this)">Coast</button>
+    <button onclick="filterCategory('landscape', this)">Landscape</button>
+    <button onclick="filterCategory('street', this)">Street</button>
+  </section>
+
+  <section class="gallery" id="galleryGrid">
+    <!-- OLD ONES -->
+    <img src="assets/images/gallery/bate-bay.jpg" alt="Bate Bay" data-category="coast" data-caption="Bate Bay: where even the seagulls look like they regret their life choices" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/blue-frost.JPG" alt="Blue Frost" data-category="coast" data-caption="Blue Frost — nature's way of saying 'fuck your warm toes'" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/bubbles.PNG" alt="Bubbles" data-category="coast" data-caption="Ocean bubbles: tiny little farts from Poseidon himself" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/cronulla-beach.jpg" alt="Cronulla Beach" data-category="coast" data-caption="Cronulla Beach: where locals tan and tourists burn" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/cronulla-rock-pools.JPG" alt="Cronulla Rock Pools" data-category="coast" data-caption="Cronulla rock pools — nature's bidet" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/dark-clifts.jpg" alt="Dark Cliffs" data-category="coast" data-caption="Dark Cliffs: looks moody as fuck, probably plotting something" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/gunnamatta.jpg" alt="Gunnamatta" data-category="coast" data-caption="Gunnamatta: even the waves look like they’ve given up" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/kurnell-whale-watching.jpg" alt="Kurnell Whale Watching" data-category="coast" data-caption="Kurnell whale watching — just a big wet dickhead having a swim" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/light-house.PNG" alt="Lighthouse" data-category="coast" data-caption="Lighthouse: warning ships 'yeah nah, don't come here, it's my turf'" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/surfer-on-rocks.JPG" alt="Surfer on Rocks" data-category="coast" data-caption="Surfer on rocks — Darwin Award nominee in real time" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/towards-bundeena.JPG" alt="Towards Bundeena" data-category="coast" data-caption="Towards Bundeena: looks peaceful but we all know there's a shark down there" onclick="openLightbox(this)">
+    <!-- 28 NEW ONES -->
+    <img src="assets/images/gallery/kurnell-cliffs-at-dawn-1.jpg" alt="Kurnell Cliffs Dawn 1" data-category="coast" data-caption="Kurnell cliffs at dawn — the sun's first golden fuck-you to the ocean" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/lifeguards-rest-at-night.jpg" alt="Lifeguards Rest Night" data-category="coast" data-caption="Lifeguard tower at night: empty and judging your drunk ass" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/australia-day-concert.jpg" alt="Australia Day Concert" data-category="coast" data-caption="Aus Day crowd: 50k drunks pretending they love the flag" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/bev-port-hacking-to-national-park.jpg" alt="Port Hacking Aerial" data-category="coast" data-caption="Port Hacking from above — rich cunts and their boats" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/bev-port-hacking-sunset.jpg" alt="Port Hacking Sunset" data-category="coast" data-caption="Port Hacking sunset: sky on fire, water pretending it's pretty" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/bird-super-highway.jpg" alt="Bird Super Highway" data-category="coast" data-caption="Bird super highway at sunrise — flying rats on their morning commute" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/coastal-waterfall.jpg" alt="Coastal Waterfall" data-category="coast" data-caption="Coastal waterfall: nature's cumshot straight into the rock pool" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/cooling-spray-summers-day.jpg" alt="Cooling Spray" data-category="coast" data-caption="Cooling spray on a summer day — ocean trying to cool your sweaty balls" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/gold-coast-skyline-2.jpg" alt="Gold Coast Skyline" data-category="coast" data-caption="Gold Coast skyline at sunset: towers full of Instagram cunts" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/golden-lifeguard-tower.jpg" alt="Golden Lifeguard Tower" data-category="coast" data-caption="Golden lifeguard tower: sun setting on another day of saving idiots" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/riding-the-wall.jpg" alt="Riding the Wall" data-category="coast" data-caption="Riding the wall at dawn — surfer pretending he’s not freezing his nuts off" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/kurnell-cliffs-at-dawn-2.jpg" alt="Kurnell Cliffs Dawn 2" data-category="coast" data-caption="Kurnell cliffs round 2 — same cliffs, different shade of ‘holy fuck that’s pretty’" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/lonely-flower.jpg" alt="Lonely Flower" data-category="coast" data-caption="Lonely flower in the mist — nature’s way of saying even plants get depressed" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/morning-wood.jpg" alt="Morning Wood" data-category="coast" data-caption="Morning wood at the beach — driftwood with a sunrise boner" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/night-palm-tree-1.jpg" alt="Night Palm Tree" data-category="coast" data-caption="Night palm tree wrapped in lights — because even trees need to feel festive" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/oak-park-at-dusk.jpg" alt="Oak Park Dusk" data-category="coast" data-caption="Oak Park at dusk: sky looks like it’s bleeding out" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/palm-tree-1.jpg" alt="Palm Tree 1" data-category="coast" data-caption="Palm tree doing its best ‘fuck you gravity’ impression" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/palm-tree-2.jpg" alt="Palm Tree 2" data-category="coast" data-caption="Palm tree silhouette — because one wasn’t enough" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/port-mac-main-beach-at-dusk.jpg" alt="Port Mac Beach Dusk" data-category="coast" data-caption="Port Mac main beach at dusk — the ocean’s last ‘goodnight cunt’" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/rainforest-meets-the-sand.jpg" alt="Rainforest Meets Sand" data-category="coast" data-caption="Rainforest meets sand — trees trying to fuck the beach" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/seagull-shadows-roam.jpg" alt="Seagull Shadows" data-category="coast" data-caption="Seagull casting a long shadow — even the rats have drama" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/shadow-soldiers.jpg" alt="Shadow Soldiers" data-category="coast" data-caption="Shadow soldiers at the rock pools — nature’s army of dicks" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/starscape-structures.jpg" alt="Starscape Structures" data-category="coast" data-caption="Starscape driftwood — beach trash looking romantic under the stars" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/sunrise-crashes.jpg" alt="Sunrise Crashes" data-category="coast" data-caption="Sunrise crashing into the waves — sky having an orgasm" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/sun-splosion-at-dawn.jpg" alt="Sun Splosion Dawn" data-category="coast" data-caption="Sun splosion at dawn — the sun literally exploding like it’s had enough" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/surfers-paradise-skyline.jpg" alt="Surfers Paradise Skyline" data-category="coast" data-caption="Surfers Paradise skyline — towers full of hungover tourists" onclick="openLightbox(this)">
+    <img src="assets/images/gallery/trade-winds-glow.jpg" alt="Trade Winds Glow" data-category="coast" data-caption="Trade winds glow at dusk — sky looking like a cheap hooker’s lipstick" onclick="openLightbox(this)">
+  </section>
+
+  <div id="lightbox" class="lightbox">
+    <div class="lightbox-content">
+      <span class="close" onclick="closeLightbox()">×</span>
+      <img id="lightboxImage" src="" alt="">
+      <p id="lightboxCaption" class="lightbox-caption"></p>
+    </div>
+  </div>
+
+  <script>
+    function filterCategory(category, clickedButton) {
+      const images = document.querySelectorAll('#galleryGrid img');
+      const buttons = document.querySelectorAll('.filters button');
+
+      buttons.forEach(b => b.classList.remove('active'));
+
+      let activeBtn = clickedButton;
+      if (!activeBtn) {
+        activeBtn = Array.from(buttons).find(b => b.textContent.trim().toLowerCase() === category);
+      }
+      if (activeBtn) activeBtn.classList.add('active');
+
+      images.forEach(img => {
+        img.style.display = (category === 'all' || img.dataset.category === category) ? 'block' : 'none';
+      });
+    }
+    function openLightbox(img) {
+      document.getElementById('lightboxImage').src = img.src;
+      document.getElementById('lightboxCaption').textContent = img.dataset.caption || "";
+      document.getElementById('lightbox').style.display = 'flex';
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').style.display = 'none';
+    }
+  </script>
+
+  <!-- Shared cart + utilities -->
+  <script src="js/main.js"></script>
+</body>
+</html>

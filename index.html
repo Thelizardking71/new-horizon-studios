@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - New Horizon Studios</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/header.css">
+  <style>
+    /* Basic homepage styling */
+    .hero {
+      height: 100vh;
+      min-height: 620px;
+      background: linear-gradient(rgba(26,60,94,0.38), rgba(26,60,94,0.52)), 
+                  url('assets/images/gallery/kurnell-whale-watching.jpg') center/cover no-repeat;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      padding: 0 2rem 12vh;
+    }
+    .hero-content {
+      max-width: 720px;
+      padding-bottom: 50px;
+    }
+
+    /* Taller screens: pull the text block up a bit */
+    @media (min-height: 900px) {
+      .hero {
+        padding-bottom: 8vh;
+      }
+      .hero-content {
+        padding-bottom: 30px;
+      }
+    }
+
+    /* Shorter screens: give more breathing room at the bottom */
+    @media (max-height: 700px) {
+      .hero {
+        padding-bottom: 18vh;
+      }
+      .hero-content {
+        padding-bottom: 40px;
+      }
+    }
+    .hero-content h1 {
+      font-family: 'Playfair Display', Georgia, 'Palatino Linotype', serif;
+      font-weight: 100;
+      font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      white-space: nowrap;
+      font-style: italic;
+    }
+
+    @media (max-width: 480px) {
+      .hero-content h1 {
+        white-space: normal;
+        font-size: clamp(2.2rem, 9vw, 3.2rem);
+      }
+    }
+    .hero-content p {
+      font-size: 1.55rem;
+      max-width: 620px;
+      margin: 0 auto 3.5rem;
+      opacity: 0.75;
+      font-weight: 100;
+    }
+    .cta-button {
+      background: #1f2937;
+      color: white;
+      border: 1px solid #1f2937;
+      padding: 1rem 2.8rem;
+      border-radius: 9999px;
+      font-family: 'EB Garamond', serif;
+      font-weight: 300;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+    .cta-button:hover {
+      background: #111827;
+      border-color: #111827;
+      transform: translateY(-3px);
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section (no header - landing page) -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Cronulla &amp; the South Coast.</h1>
+      <p>Raw, intimate photography of the places that shaped us.</p>
+      <a href="gallery.html" class="cta-button">View Gallery</a>
+    </div>
+  </section>
+
+  <!-- Shared cart + utilities -->
+  <script src="js/main.js"></script>
+</body>
+</html>

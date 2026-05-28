@@ -1,0 +1,77 @@
+/* ============================================
+   New Horizon Studios - Shared Header Styles
+   ============================================ */
+
+/* Main header bar */
+header {
+  background: white;
+  padding: 16px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Navigation links */
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  padding-bottom: 4px;
+  position: relative;
+}
+
+.nav-links a:hover {
+  color: #c9a66b;
+}
+
+.nav-links a.active {
+  color: #c9a66b;
+  border-bottom: 2px solid #c9a66b;
+}
+
+/* Shell emoji under the active nav item */
+.nav-links a.active:after {
+  content: '🐚';
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 17px;
+}
+
+/* Large serif page title in header */
+.page-title {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(2.1rem, 5.2vw, 3.4rem);
+  line-height: 1.08;
+  font-weight: 400;
+  color: #1f1f1f;
+  margin: 0;
+}
+
+@media (max-width: 500px) {
+  .page-title {
+    font-size: clamp(1.6rem, 7vw, 2.4rem);
+  }
+  header {
+    padding: 10px 4%;
+  }
+  .nav-links {
+    gap: 1rem;
+  }
+  .nav-links a {
+    font-size: 0.85rem;
+  }
+}

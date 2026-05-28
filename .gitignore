@@ -1,0 +1,50 @@
+# New Horizon Studios - Git Ignore
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Local environment / secrets
+.env
+.env.local
+*.local
+
+# Large media (optional - many people commit images for static sites)
+# Uncomment if you want to use Git LFS or host images elsewhere
+# *.jpg
+# *.jpeg
+# *.png
+# *.gif
+# *.webp
+
+# Temporary / backup files
+*.tmp
+*.bak
+*.swp
+*~
+
+# Local backups (large zips and folders)
+backups/
+
+# Build / cache (if we add a build step later)
+dist/
+build/
+.cache/
+
+# Node (if we ever add tooling)
+node_modules/
+npm-debug.log*
+
+# Windows
+desktop.ini
