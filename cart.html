@@ -92,6 +92,79 @@
     }
     .checkout-btn:hover { background: #c9a66b; }
 
+    /* ============================================
+       OPTION E: Immersive full-container empty state
+       Bubbles background covers the whole .cart-container
+    ============================================ */
+    .cart-container.empty {
+      position: relative;
+      max-width: 1200px;
+      min-height: min(620px, 72vh);
+      border-radius: 12px;
+      padding: 30px 5% 40px;   /* adjusted for bottom-anchored button */
+    }
+
+    /* Full-width background image breakout (removes side whitespace) */
+    .cart-container.empty::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      top: 0;
+      bottom: 0;
+      background-image: url('assets/images/bubbles.PNG');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.33;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Everything inside sits above the background image */
+    .cart-container.empty > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hide the redundant "Your Cart" heading in the immersive empty state */
+    .cart-container.empty h2 {
+      display: none;
+    }
+
+    /* Inner content styles when cart-container is in immersive empty mode */
+    .cart-container.empty #cartItems {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      min-height: 420px;
+      padding-bottom: 45px;   /* 50% lower than before */
+    }
+
+    /* Button styled to match the landing page .cta-button */
+    .cart-container.empty .empty-cta-button {
+      background: #1f2937;
+      color: white;
+      border: 1px solid #1f2937;
+      padding: 1rem 2.8rem;
+      border-radius: 9999px;
+      font-family: 'EB Garamond', serif;
+      font-weight: 300;
+      font-size: 1.05rem;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+      position: relative;
+      z-index: 2;
+    }
+
+    .cart-container.empty .empty-cta-button:hover {
+      background: #111827;
+      border-color: #111827;
+      transform: translateY(-3px);
+    }
+
     @media (max-width: 600px) {
       .cart-item {
         flex-wrap: wrap;
@@ -116,7 +189,7 @@
   <script src="js/header-loader.js" data-title="Cart" data-active="cart"></script>
 
   <div class="cart-container">
-    <h2 style="margin-bottom: 30px;">Your Cart</h2>
+    <h2 style="margin-bottom: 20px;">Your Cart</h2>
     
     <div id="cartItems"></div>
     
@@ -140,15 +213,23 @@
 
     function renderCart() {
       const container = document.getElementById('cartItems');
+      const cartContainer = document.querySelector('.cart-container');
       const summary = document.getElementById('cartSummary');
+
       container.innerHTML = '';
+      cartContainer.classList.remove('empty');
 
       const currentCart = window.getCart ? window.getCart() : [];
 
       if (currentCart.length === 0) {
-        container.innerHTML = '<p>Your cart is empty.</p>';
+        cartContainer.classList.add('empty');
+        container.innerHTML = `
+          <a href="products.html" class="empty-cta-button">Return to Shop</a>
+        `;
         summary.style.display = 'none';
         return;
+      } else {
+        cartContainer.classList.remove('empty');
       }
 
       let total = 0;
@@ -173,7 +254,7 @@
             <button class="qty-btn" onclick="changeQty(${item.cartId}, 1)">+</button>
           </div>
 
-          <button class="remove-btn" onclick="removeFromCart(${item.cartId})">Remove</button>
+          <button class="remove-btn" onclick="handleRemove(${item.cartId})">Remove</button>
         `;
         container.appendChild(div);
       });
@@ -199,6 +280,15 @@
       if (window.updateCartCount) window.updateCartCount();
     }
 
+    function handleRemove(cartId) {
+      if (window.removeFromCart) {
+        window.removeFromCart(cartId);
+      }
+      // Re-render the cart list and refresh header count
+      renderCart();
+      if (window.updateCartCount) window.updateCartCount();
+    }
+
     function proceedToCheckout() {
       alert('Checkout flow coming next (Printful + Stripe integration)');
       // Later we can redirect to a checkout page or Printful checkout
@@ -213,8 +303,5 @@
     // Run after shared script has executed
     window.addEventListener('load', initCartPage);
   </script>
-
-  <!-- Shared cart + utilities -->
-  <script src="js/main.js"></script>
 </body>
 </html>
