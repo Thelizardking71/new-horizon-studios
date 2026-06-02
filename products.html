@@ -88,7 +88,6 @@
   <section class="filters">
     <button class="active" onclick="filterCategory('all', this)">All</button>
     <button onclick="filterCategory('prints', this)">Prints</button>
-    <button onclick="filterCategory('digital', this)">Digital</button>
     <button onclick="filterCategory('mugs', this)">Mugs</button>
     <button onclick="filterCategory('apparel', this)">Apparel</button>
     <button onclick="filterCategory('other', this)">Other</button>
@@ -103,7 +102,14 @@
       <div class="modal-info">
         <h2 id="modalName"></h2>
         <div class="price" id="modalPrice"></div>
-        <div class="options">
+        <div id="typeSelectContainer" class="options">
+          <label>Purchase Type</label>
+          <select id="typeSelect">
+            <option value="digital">Digital Download — $18</option>
+            <option value="print" selected>Print (choose size &amp; material below)</option>
+          </select>
+        </div>
+        <div id="printOptions" class="options">
           <label>Size</label>
           <select id="sizeSelect">
             <option value="A4">A4 (21 × 29.7 cm)</option>
@@ -117,7 +123,7 @@
             <option value="Metal">Metal (Aluminium)</option>
           </select>
         </div>
-        <div class="shipping-note">Estimated shipping: 5–10 business days • $12–18 to Australia</div>
+        <div id="shippingNote" class="shipping-note">Estimated shipping: 5–10 business days • $12–18 to Australia</div>
         <button class="add-to-cart-btn" onclick="addToCartFromModal()">Add to Cart</button>
       </div>
     </div>
@@ -126,66 +132,47 @@
 <script>
   let products = [
     // OLD ONES
-    { id: 1, name: "Cronulla Sunrise (Print)", price: 95, category: "prints", img: "assets/images/gallery/cronulla-beach.jpg" },
-    { id: 2, name: "Kurnell Whale Watching (Print)", price: 120, category: "prints", img: "assets/images/gallery/kurnell-whale-watching.jpg" },
-    { id: 3, name: "Bubbles at Dawn (Print)", price: 85, category: "prints", img: "assets/images/gallery/bubbles.PNG" },
-    { id: 4, name: "Towards Bundeena (Print)", price: 110, category: "prints", img: "assets/images/gallery/towards-bundeena.JPG" },
-    { id: 5, name: "Dark Cliffs (Print)", price: 95, category: "prints", img: "assets/images/gallery/dark-clifts.jpg" },
-    { id: 6, name: "Gunnamatta (Print)", price: 100, category: "prints", img: "assets/images/gallery/gunnamatta.jpg" },
-    { id: 7, name: "Cronulla Sunrise (Digital)", price: 18, category: "digital", img: "assets/images/gallery/cronulla-beach.jpg" },
-    { id: 8, name: "Kurnell Whale Watching (Digital)", price: 18, category: "digital", img: "assets/images/gallery/kurnell-whale-watching.jpg" },
-    { id: 9, name: "Bubbles at Dawn (Digital)", price: 15, category: "digital", img: "assets/images/gallery/bubbles.PNG" },
-    { id: 10, name: "Towards Bundeena (Digital)", price: 18, category: "digital", img: "assets/images/gallery/towards-bundeena.JPG" },
-    { id: 11, name: "Dark Cliffs (Digital)", price: 15, category: "digital", img: "assets/images/gallery/dark-clifts.jpg" },
-    { id: 12, name: "Gunnamatta (Digital)", price: 15, category: "digital", img: "assets/images/gallery/gunnamatta.jpg" },
-    { id: 13, name: "Cronulla Sunrise Mug", price: 28, category: "mugs", img: "assets/images/gallery/cronulla-beach.jpg" },
-    { id: 14, name: "Kurnell Whale Mug", price: 28, category: "mugs", img: "assets/images/gallery/kurnell-whale-watching.jpg" },
-    { id: 15, name: "Bubbles at Dawn Tee", price: 48, category: "apparel", img: "assets/images/gallery/bubbles.PNG" },
-    { id: 16, name: "Coastal Dreams Hoodie", price: 78, category: "apparel", img: "assets/images/gallery/gunnamatta.jpg" },
-    { id: 17, name: "2026 Coastal Calendar", price: 35, category: "other", img: "assets/images/gallery/gunnamatta.jpg" },
-    { id: 18, name: "Cronulla Poster (A2)", price: 45, category: "other", img: "assets/images/gallery/cronulla-beach.jpg" },
+    { id: 1, name:"Cronulla Sunrise", price: 95, category:"prints", img:"assets/images/gallery/cronulla-beach.jpg" },
+    { id: 2, name:"Kurnell Whale Watching", price: 120, category:"prints", img:"assets/images/gallery/kurnell-whale-watching.jpg" },
+    { id: 3, name:"Bubbles at Dawn", price: 85, category:"prints", img:"assets/images/gallery/bubbles.PNG" },
+    { id: 4, name:"Towards Bundeena", price: 110, category:"prints", img:"assets/images/gallery/towards-bundeena.JPG" },
+    { id: 5, name:"Dark Cliffs", price: 95, category:"prints", img:"assets/images/gallery/dark-clifts.jpg" },
+    { id: 6, name:"Gunnamatta", price: 100, category:"prints", img:"assets/images/gallery/gunnamatta.jpg" },
+    { id: 13, name:"Cronulla Sunrise Mug", price: 28, category:"mugs", img:"assets/images/gallery/cronulla-beach.jpg" },
+    { id: 14, name:"Kurnell Whale Mug", price: 28, category:"mugs", img:"assets/images/gallery/kurnell-whale-watching.jpg" },
+    { id: 15, name:"Bubbles at Dawn Tee", price: 48, category:"apparel", img:"assets/images/gallery/bubbles.PNG" },
+    { id: 16, name:"Coastal Dreams Hoodie", price: 78, category:"apparel", img:"assets/images/gallery/gunnamatta.jpg" },
+    { id: 17, name:"2026 Coastal Calendar", price: 35, category:"other", img:"assets/images/gallery/gunnamatta.jpg" },
+    { id: 18, name:"Cronulla Poster (A2)", price: 45, category:"other", img:"assets/images/gallery/cronulla-beach.jpg" },
     // 28 NEW PRINTS (all coastal shots, priced like the rest)
-    { id: 19, name: "Kurnell Cliffs at Dawn 1 (Print)", price: 115, category: "prints", img: "assets/images/gallery/kurnell-cliffs-at-dawn-1.jpg" },
-    { id: 20, name: "Lifeguards Rest at Night (Print)", price: 95, category: "prints", img: "assets/images/gallery/lifeguards-rest-at-night.jpg" },
-    { id: 21, name: "Australia Day Concert (Print)", price: 85, category: "prints", img: "assets/images/gallery/australia-day-concert.jpg" },
-    { id: 22, name: "Port Hacking Aerial (Print)", price: 130, category: "prints", img: "assets/images/gallery/bev-port-hacking-to-national-park.jpg" },
-    { id: 23, name: "Port Hacking Sunset (Print)", price: 110, category: "prints", img: "assets/images/gallery/bev-port-hacking-sunset.jpg" },
-    { id: 24, name: "Bird Super Highway (Print)", price: 100, category: "prints", img: "assets/images/gallery/bird-super-highway.jpg" },
-    { id: 25, name: "Coastal Waterfall (Print)", price: 95, category: "prints", img: "assets/images/gallery/coastal-waterfall.jpg" },
-    { id: 26, name: "Cooling Spray Summers Day (Print)", price: 90, category: "prints", img: "assets/images/gallery/cooling-spray-summers-day.jpg" },
-    { id: 27, name: "Gold Coast Skyline 2 (Print)", price: 125, category: "prints", img: "assets/images/gallery/gold-coast-skyline-2.jpg" },
-    { id: 28, name: "Golden Lifeguard Tower (Print)", price: 105, category: "prints", img: "assets/images/gallery/golden-lifeguard-tower.jpg" },
-    { id: 29, name: "Riding the Wall (Print)", price: 115, category: "prints", img: "assets/images/gallery/riding-the-wall.jpg" },
-    { id: 30, name: "Kurnell Cliffs at Dawn 2 (Print)", price: 115, category: "prints", img: "assets/images/gallery/kurnell-cliffs-at-dawn-2.jpg" },
-    { id: 31, name: "Lonely Flower (Print)", price: 80, category: "prints", img: "assets/images/gallery/lonely-flower.jpg" },
-    { id: 32, name: "Morning Wood (Print)", price: 95, category: "prints", img: "assets/images/gallery/morning-wood.jpg" },
-    { id: 33, name: "Night Palm Tree (Print)", price: 100, category: "prints", img: "assets/images/gallery/night-palm-tree-1.jpg" },
-    { id: 34, name: "Oak Park at Dusk (Print)", price: 120, category: "prints", img: "assets/images/gallery/oak-park-at-dusk.jpg" },
-    { id: 35, name: "Palm Tree 1 (Print)", price: 90, category: "prints", img: "assets/images/gallery/palm-tree-1.jpg" },
-    { id: 36, name: "Palm Tree 2 (Print)", price: 90, category: "prints", img: "assets/images/gallery/palm-tree-2.jpg" },
-    { id: 37, name: "Port Mac Main Beach at Dusk (Print)", price: 105, category: "prints", img: "assets/images/gallery/port-mac-main-beach-at-dusk.jpg" },
-    { id: 38, name: "Rainforest Meets Sand (Print)", price: 110, category: "prints", img: "assets/images/gallery/rainforest-meets-the-sand.jpg" },
-    { id: 39, name: "Seagull Shadows Roam (Print)", price: 95, category: "prints", img: "assets/images/gallery/seagull-shadows-roam.jpg" },
-    { id: 40, name: "Shadow Soldiers (Print)", price: 125, category: "prints", img: "assets/images/gallery/shadow-soldiers.jpg" },
-    { id: 41, name: "Starscape Structures (Print)", price: 115, category: "prints", img: "assets/images/gallery/starscape-structures.jpg" },
-    { id: 42, name: "Sunrise Crashes (Print)", price: 105, category: "prints", img: "assets/images/gallery/sunrise-crashes.jpg" },
-    { id: 43, name: "Sun Splosion at Dawn (Print)", price: 120, category: "prints", img: "assets/images/gallery/sun-splosion-at-dawn.jpg" },
-    { id: 44, name: "Surfers Paradise Skyline (Print)", price: 130, category: "prints", img: "assets/images/gallery/surfers-paradise-skyline.jpg" },
-    { id: 45, name: "Trade Winds Glow (Print)", price: 110, category: "prints", img: "assets/images/gallery/trade-winds-glow.jpg" }
+    { id: 19, name:"Kurnell Cliffs at Dawn 1", price: 115, category:"prints", img:"assets/images/gallery/kurnell-cliffs-at-dawn-1.jpg" },
+    { id: 20, name:"Lifeguards Rest at Night", price: 95, category:"prints", img:"assets/images/gallery/lifeguards-rest-at-night.jpg" },
+    { id: 21, name:"Australia Day Concert", price: 85, category:"prints", img:"assets/images/gallery/australia-day-concert.jpg" },
+    { id: 22, name:"Port Hacking Aerial", price: 130, category:"prints", img:"assets/images/gallery/bev-port-hacking-to-national-park.jpg" },
+    { id: 23, name:"Port Hacking Sunset", price: 110, category:"prints", img:"assets/images/gallery/bev-port-hacking-sunset.jpg" },
+    { id: 24, name:"Bird Super Highway", price: 100, category:"prints", img:"assets/images/gallery/bird-super-highway.jpg" },
+    { id: 25, name:"Coastal Waterfall", price: 95, category:"prints", img:"assets/images/gallery/coastal-waterfall.jpg" },
+    { id: 26, name:"Cooling Spray Summers Day", price: 90, category:"prints", img:"assets/images/gallery/cooling-spray-summers-day.jpg" },
+    { id: 27, name:"Gold Coast Skyline 2", price: 125, category:"prints", img:"assets/images/gallery/gold-coast-skyline-2.jpg" },
+    { id: 28, name:"Golden Lifeguard Tower", price: 105, category:"prints", img:"assets/images/gallery/golden-lifeguard-tower.jpg" },
+    { id: 29, name:"Riding the Wall", price: 115, category:"prints", img:"assets/images/gallery/riding-the-wall.jpg" },
+    { id: 30, name:"Kurnell Cliffs at Dawn 2", price: 115, category:"prints", img:"assets/images/gallery/kurnell-cliffs-at-dawn-2.jpg" },
+    { id: 31, name:"Lonely Flower", price: 80, category:"prints", img:"assets/images/gallery/lonely-flower.jpg" },
+    { id: 32, name:"Morning Wood", price: 95, category:"prints", img:"assets/images/gallery/morning-wood.jpg" },
+    { id: 33, name:"Night Palm Tree", price: 100, category:"prints", img:"assets/images/gallery/night-palm-tree-1.jpg" },
+    { id: 34, name:"Oak Park at Dusk", price: 120, category:"prints", img:"assets/images/gallery/oak-park-at-dusk.jpg" },
+    { id: 35, name:"Palm Tree 1", price: 90, category:"prints", img:"assets/images/gallery/palm-tree-1.jpg" },
+    { id: 36, name:"Palm Tree 2", price: 90, category:"prints", img:"assets/images/gallery/palm-tree-2.jpg" },
+    { id: 37, name:"Port Mac Main Beach at Dusk", price: 105, category:"prints", img:"assets/images/gallery/port-mac-main-beach-at-dusk.jpg" },
+    { id: 38, name:"Rainforest Meets Sand", price: 110, category:"prints", img:"assets/images/gallery/rainforest-meets-the-sand.jpg" },
+    { id: 39, name:"Seagull Shadows Roam", price: 95, category:"prints", img:"assets/images/gallery/seagull-shadows-roam.jpg" },
+    { id: 40, name:"Shadow Soldiers", price: 125, category:"prints", img:"assets/images/gallery/shadow-soldiers.jpg" },
+    { id: 41, name:"Starscape Structures", price: 115, category:"prints", img:"assets/images/gallery/starscape-structures.jpg" },
+    { id: 42, name:"Sunrise Crashes", price: 105, category:"prints", img:"assets/images/gallery/sunrise-crashes.jpg" },
+    { id: 43, name:"Sun Splosion at Dawn", price: 120, category:"prints", img:"assets/images/gallery/sun-splosion-at-dawn.jpg" },
+    { id: 44, name:"Surfers Paradise Skyline", price: 130, category:"prints", img:"assets/images/gallery/surfers-paradise-skyline.jpg" },
+    { id: 45, name:"Trade Winds Glow", price: 110, category:"prints", img:"assets/images/gallery/trade-winds-glow.jpg" }
   ];
-
-  // Generate digital twins for the new prints (ids 19-45) safely after the array exists
-  const newPrints = products.filter(p => p.category === 'prints' && p.id >= 19);
-  const digitalTwins = newPrints.map((p, i) => ({
-    id: 46 + i,
-    name: p.name.replace('(Print)', '(Digital)'),
-    price: 18,
-    category: "digital",
-    img: p.img
-  }));
-
-  // Merge the digital versions into the main products array
-  products.push(...digitalTwins);
 
   // Cart logic is now provided by js/main.js (shared)
   function filterCategory(category, clickedButton) {
@@ -207,34 +194,95 @@
     });
   }
   function addToCartFromShop(product) {
-    const size = document.getElementById('sizeSelect') ? document.getElementById('sizeSelect').value : '';
-    const material = document.getElementById('materialSelect') ? document.getElementById('materialSelect').value : '';
-    const displayName = `${product.name} — ${size} / ${material}`;
+    const typeSelect = document.getElementById('typeSelect');
+    const isPhotoPrint = product.category === 'prints';
+    let type = 'print';
+    if (isPhotoPrint && typeSelect) {
+      type = typeSelect.value;
+    }
 
-    // Use the shared cart function from js/main.js
-    window.addToCart(product, {
-      selectedSize: size,
-      selectedMaterial: material,
-      displayName: displayName
-    });
+    if (isPhotoPrint && type === 'digital') {
+      const displayName = `${product.name} (Digital Download)`;
+      // Override price for digital
+      const digitalProduct = Object.assign({}, product, { price: 18 });
+      window.addToCart(digitalProduct, {
+        displayName: displayName
+      });
+    } else if (isPhotoPrint) {
+      const size = document.getElementById('sizeSelect') ? document.getElementById('sizeSelect').value : '';
+      const material = document.getElementById('materialSelect') ? document.getElementById('materialSelect').value : '';
+      const displayName = `${product.name} — ${size} / ${material}`;
+
+      window.addToCart(product, {
+        selectedSize: size,
+        selectedMaterial: material,
+        displayName: displayName
+      });
+    } else {
+      // mugs, apparel, other products - add as-is
+      window.addToCart(product, {
+        displayName: product.name
+      });
+    }
   }
+
   function addToCartFromModal() {
     if (currentProduct) {
       addToCartFromShop(currentProduct);
       closeLightbox();
     }
   }
+
   let currentProduct = null;
+
+  function updateModalForType() {
+    const type = document.getElementById('typeSelect').value;
+    const printOptions = document.getElementById('printOptions');
+    const shippingNote = document.getElementById('shippingNote');
+    const priceEl = document.getElementById('modalPrice');
+
+    if (type === 'digital') {
+      priceEl.textContent = '$18';
+      printOptions.style.display = 'none';
+      shippingNote.style.display = 'none';
+    } else {
+      if (currentProduct) {
+        priceEl.textContent = `$${currentProduct.price}`;
+      }
+      printOptions.style.display = 'block';
+      shippingNote.style.display = 'block';
+    }
+  }
+
   function openLightbox(product) {
     currentProduct = product;
     document.getElementById('modalImage').src = product.img;
     document.getElementById('modalName').textContent = product.name;
-    document.getElementById('modalPrice').textContent = `$${product.price}`;
-    const options = document.querySelector('.options');
-    options.style.display = (product.category === 'prints') ? 'block' : 'none';
+
+    const typeContainer = document.getElementById('typeSelectContainer');
+    const printOptions = document.getElementById('printOptions');
+    const shippingNote = document.getElementById('shippingNote');
+    const typeSelect = document.getElementById('typeSelect');
+    const priceEl = document.getElementById('modalPrice');
+
+    if (product.category === 'prints') {
+      // Photo products: show choice of digital or print
+      typeContainer.style.display = 'block';
+      typeSelect.value = 'print';
+      updateModalForType();
+      typeSelect.onchange = updateModalForType;
+    } else {
+      // Mugs, apparel, other: no type choice
+      typeContainer.style.display = 'none';
+      printOptions.style.display = 'none';
+      shippingNote.style.display = 'none';
+      priceEl.textContent = `$${product.price}`;
+    }
+
     document.getElementById('modal').style.display = 'block';
     document.body.style.overflow = 'hidden';
   }
+
   function closeLightbox() {
     document.getElementById('modal').style.display = 'none';
     document.body.style.overflow = '';
